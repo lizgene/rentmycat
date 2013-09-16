@@ -1,4 +1,8 @@
 Rentmycat::Application.routes.draw do
+  resources :cart_items
+
+  resources :carts
+
   get "store/index"
   resources :cats
   root to: 'store#index', as: 'store'
