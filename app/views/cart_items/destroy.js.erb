@@ -1,0 +1,11 @@
+// if ($('#cart tr').length <= 1) { $('#cart').hide(); }
+// $('#current_item').hide(); 
+
+
+
+
+
+$('#current_item').hide('blind', 1000);
+$('#cart').html("<%=j render @cart %>");
+
+if(($('#cart_item').length < 1)&&($('#current_item').length < 1)) { $('#cart').hide('blind', 1000); }

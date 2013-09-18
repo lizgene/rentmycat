@@ -1,0 +1,10 @@
+<% if cart_item == @current_item %>
+<tr id="current_item">
+<% else %>
+<tr id="cart_item">
+<% end %>
+  <td><%= cart_item.quantity %> &times;</td>
+  <td><%= cart_item.cat.name %></td>
+  <td class="item_price"><%= number_to_currency(cart_item.cat.price) %></td>
+  <td><%= button_to 'X', cart_item, method: :delete, remote: true, data: { confirm: 'Are you sure?' } %>
+</tr>

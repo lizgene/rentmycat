@@ -1,0 +1,10 @@
+<h2>Your Basket</h2>
+<table>
+  <%= render cart.cart_items %>
+  <tr class="total_line">
+    <td colspan="2">Total</td>
+    <td class="total_cell"><%= number_to_currency(cart.total_price) %></td>
+  </tr> 
+</table>
+<%= button_to 'Empty basket', cart, method: :delete, remote: true,
+    data: { confirm: 'Are you sure?' } %>

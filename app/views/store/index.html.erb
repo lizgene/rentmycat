@@ -10,7 +10,7 @@
       <p><%= sanitize(cat.description) %></p>
       <div class="price_line">
         <span class="price"><%= number_to_currency(cat.price) %></span>
-        <%= button_to 'Add to Cart', cart_items_path(cat_id: cat) %>
+        <%= button_to 'Add to Cart', cart_items_path(cat_id: cat), remote: true %>
       </div>
     </div>
   <% end %>

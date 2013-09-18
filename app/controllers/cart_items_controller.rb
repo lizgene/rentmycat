@@ -24,22 +24,23 @@ class CartItemsController < ApplicationController
     @cart = current_cart 
     cat = Cat.find(params[:cat_id])
 
-    unless @cart.cart_items.find_by_cat_id(cat.id) != nil
-      @cart_item = @cart.cart_items.build
-      @cart_item.cat = cat
+    if @cart.cart_items.find_by_cat_id(cat.id)
+      flash[:notice] = "You're crazy bananas! You can't add a cat to your cart twice!"
+      return redirect_to '/'
+    end
+
+    @cart_item = @cart.cart_items.build
+    @cart_item.cat = cat
 
       respond_to do |format|
         if @cart_item.save
-          format.html { redirect_to @cart_item.cart, notice: 'Successfully added adorable kitty!' }
+          format.html { redirect_to store_url }
+          format.js { @current_item = @cart_item }
           format.json { render json: @cart_item, status: :created, location: @cart_item }
         else
           format.html { render action: 'new', notice: 'Oh noes! There was an error updating your cart.' }
           format.json { render json: @cart_item.errors, status: :unprocessable_entity }
         end
-      end
-      else
-        flash[:notice] = "You're crazy bananas! You can't add a cat to your cart twice!"
-        redirect_to '/'
       end
   end
 
@@ -56,10 +57,13 @@ class CartItemsController < ApplicationController
   end
 
   def destroy
-    @cart_item.destroy
+    @cart = current_cart 
     respond_to do |format|
-      format.html { redirect_to cart_items_url }
-      format.json { head :no_content }
+      if @cart_item.destroy
+        format.html { redirect_to store_url }
+        format.js { @current_item = @cart_item }
+        format.json { head :no_content }
+      end
     end
   end
 

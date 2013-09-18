@@ -10,6 +10,17 @@ class CartsController < ApplicationController
   # GET /carts/1
   # GET /carts/1.json
   def show
+    begin
+      @cart = Cart.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      logger.error "Attempt to access cart with invalid ID: #{params[:id]}"
+      redirect_to store_url, notice: "Oh no! Something went wrong. Please keep shopping and try again later."
+    else
+      respond_to do |format|
+        format.html # show.html.erb
+        format.json { render json: @cart }
+      end
+    end
   end
 
   # GET /carts/new
@@ -28,7 +39,7 @@ class CartsController < ApplicationController
 
     respond_to do |format|
       if @cart.save
-        format.html { redirect_to @cart, notice: 'Cart was successfully created.' }
+        format.html { redirect_to @cart }
         format.json { render action: 'show', status: :created, location: @cart }
       else
         format.html { render action: 'new' }
@@ -42,7 +53,7 @@ class CartsController < ApplicationController
   def update
     respond_to do |format|
       if @cart.update(cart_params)
-        format.html { redirect_to @cart, notice: 'Cart was successfully updated.' }
+        format.html { redirect_to @cart }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
@@ -54,18 +65,24 @@ class CartsController < ApplicationController
   # DELETE /carts/1
   # DELETE /carts/1.json
   def destroy
-    @cart.destroy
+    @cart = current_cart
+    # @cart.destroy
+    session[:cart_id] = nil
+
     respond_to do |format|
-      format.html { redirect_to carts_url }
-      format.json { head :no_content }
+      if @cart.destroy 
+        format.html { redirect_to store_url }
+        format.js
+        format.json { head :no_content }
+      end
     end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_cart
-      @cart = Cart.find(params[:id])
-    end
+  def set_cart
+    @cart = current_cart
+  end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def cart_params

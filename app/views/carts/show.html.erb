@@ -2,9 +2,4 @@
 <p id="notice"><%= notice %></p>
 <% end %>
 
-<h2>Your Cart</h2>
-<ul>
-  <% @cart.cart_items.each do |item| %>
-    <li><%= item.cat.name %></li>
-  <% end %>
-</ul>
+<%= render @cart %>
